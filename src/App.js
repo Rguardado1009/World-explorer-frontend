@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import AuthenticatedApp from './AuthenticatedApp'
+import UnauthenticatedApp from './UnauthenticatedApp'
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/", { credentials: 'include' }).then((res) => {
+      if (res.ok) {
+        res.json().then((user) => {
+          setCurrentUser(user);
+          setAuthChecked(true);
+        });
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, []);
+
+  if (!authChecked) {
+    return <div>you are not logged in </div>;
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        {currentUser ? (
+          <AuthenticatedApp
+            setCurrentUser={setCurrentUser}
+            currentUser={currentUser}
+          />
+        ) : (
+          <UnauthenticatedApp setCurrentUser={setCurrentUser} />
+        )}
+      </Router>
   );
 }
 
