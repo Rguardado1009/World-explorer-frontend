@@ -3,6 +3,7 @@ import {makeStyles} from '@material-ui/core'
 import {Button, ButtonGroup } from '@material-ui/core'
 import { AppBar } from '@material-ui/core'
 import {Typography} from '@material-ui/core'
+import { Link } from "react-router-dom";
 
 
 const useStyles = makeStyles({
@@ -50,10 +51,18 @@ export default function Layout({children}) {
             component="h1"
             >Flight Explorer</Typography>
             <ButtonGroup className={classes.group}>
-            <Button className={classes.btn}>About</Button>               
-            <Button className={classes.btn}>Reviews</Button>
-            <Button className={classes.btn}>Register</Button>
-            <Button className={classes.btn}>Sign in</Button>
+                <Link to="/about">
+                <Button className={classes.btn}>About</Button>               
+                </Link>
+                <Link to="/airlines">
+                <Button className={classes.btn}>Reviews</Button>
+                </Link>
+                <Link to="/signup">                
+                <Button className={classes.btn}>Register</Button>
+                </Link>
+                <Link to="/login">                
+                <Button className={classes.btn}>Sign in</Button>
+                </Link>
             </ButtonGroup>  
             </AppBar> 
             <div className={classes.page}>
