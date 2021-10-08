@@ -1,6 +1,7 @@
 import {React, useState, useEffect} from 'react'
 import { Container, Grid } from "@material-ui/core";
 import FlightsCard from './FlightsCard';
+
 // import {useParams} from "react-router-dom"
 const Flights = () => {
 const [flights, setFlights] = useState([]);
@@ -17,7 +18,8 @@ useEffect(()=>{
 {flights.map(flight =>(
     <Grid item lg= {4} md={4} key={flight.id}>
       <FlightsCard flights={flight}/>
-    </Grid>
+                
+      </Grid>
     ))}
   </Grid>
         </Container>

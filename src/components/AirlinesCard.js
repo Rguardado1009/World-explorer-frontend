@@ -50,18 +50,26 @@ export default function AirlinesCard({airline}) {
     const handleExpandClick = () => {
         setExpanded(!expanded);
       };
-      const [likeBtn, setLikeBtn] = useState(0);
-      const [dislikeBtn, setDislikeBtn] = useState(0);
+      const [like, setLike] = useState(airline.likes);
+      const [dislike, setDislike] = useState(airline.dislikes);
 
       const handleLike = (e) =>{
-        setLikeBtn(likeBtn + 1);
-        const likes = {likeBtn};
-        fetch('http://localhost:3000/airlines/id',{
-          method: "PATCH",
-          headers:{"Content-Type": "application/json"},
-          body: JSON.stringify(likes),
+        setLike(like+1);
+        fetch(`http://localhost:3000/airlines/${airline.id}/likes`,{
+        method: "PATCH",
+        headers:{"Content-Type": "application/json"},
+          body: JSON.stringify(like),
         });
       };
+      const handleDislike = (e) =>{
+        setDislike(dislike+1);
+        fetch(`http://localhost:3000/airlines/${airline.id}/dislikes`,{
+        method: "PATCH",
+        headers:{"Content-Type": "application/json"},
+          body: JSON.stringify(dislike),
+        });
+      };
+
 
     return (
         <div>
@@ -69,7 +77,7 @@ export default function AirlinesCard({airline}) {
                 <CardHeader
                 action ={
                 <IconButton>
-                    <DeleteOutlined/>
+                    {/* <DeleteOutlined/> */}
                 </IconButton>}
                 title={airline.airline_name}
                 subheader={airline.founded}
@@ -88,13 +96,13 @@ export default function AirlinesCard({airline}) {
                 <CardActions disableSpacing>
                     <IconButton aria-label="add to favorites" 
                     >
-                    <Badge color="secondary" badgeContent={likeBtn} showZero>
+                    <Badge color="secondary" badgeContent={like} showZero>
                       <ThumbUp onClick={handleLike} />
                       </Badge>
                     </IconButton>
                     <IconButton aria-label="add to favorites" 
-                    onClick={() => setDislikeBtn(dislikeBtn + 1)}>
-                    <Badge color="secondary" badgeContent={dislikeBtn} showZero>
+                    onClick={handleDislike}>
+                    <Badge color="secondary" badgeContent={dislike} showZero>
                       <ThumbDown />
                       </Badge>
                     </IconButton>

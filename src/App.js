@@ -1,37 +1,40 @@
-import './App.css';
-import Airlines from './components/Airlines';
-import Flights from './components/Flights';
-import Signup from './components/Signup';
-import Login from './components/Login';
-import Layout from "./components/Layout";
-import About from './components/About'
 
-import { Switch, Route, useHistory} from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import AuthenticatedApp from './AuthenticatedApp'
+import UnauthenticatedApp from './UnauthenticatedApp'
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/me", { credentials: 'include' }).then((res) => {
+      if (res.ok) {
+        res.json().then((user) => {
+          setCurrentUser(user);
+          setAuthChecked(true);
+        });
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, []);
+
+  if (!authChecked) {
+    return <div>you are not logged in </div>;
+  }
   return (
-      <div>
-        <Layout >
-        <Switch>
-        <Route path="/about">
-        <About/>
-        </Route>
-        <Route path="/flights">
-        <Flights />
-        </Route>
-        <Route path="/airlines">
-        <Airlines />
-        </Route>
-        <Route path="/signup">
-        <Signup/>
-        </Route>
-        <Route path="/login">
-        <Login/>
-        </Route>
-        </Switch>
-        </Layout>
-        
-    </div>
+      <Router>
+        {currentUser ? (
+          <AuthenticatedApp
+            setCurrentUser={setCurrentUser}
+            currentUser={currentUser}
+          />
+        ) : (
+          <UnauthenticatedApp setCurrentUser={setCurrentUser} />
+        )}
+      </Router>
   );
 }
 

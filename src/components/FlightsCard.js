@@ -2,15 +2,17 @@ import React, {useState} from 'react'
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-
+import { useHistory } from "react-router-dom";
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import ThumbUp from '@mui/icons-material/ThumbUp';
+import ThumbDown from '@mui/icons-material/ThumbDown';
+import { Badge } from '@material-ui/core';
 
-import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -30,11 +32,40 @@ const ExpandMore = styled((props) => {
  
 
 export default function FlightsCard({flights}) {
+  const history = useHistory();
     const [expanded, setExpanded] = useState(false);
     const handleExpandClick = () => {
         setExpanded(!expanded);
       };
-    
+      const [like, setLike] = useState(flights.likes);
+      const [dislike, setDislike] = useState(flights.dislikes);
+      const handleDelete = () =>{
+        fetch(`http://localhost:3000/flights/${flights.id}`,{
+        method: "DELETE"     
+        }).then((res)=>{
+          if (res.ok){
+        history.push('/flights')
+          }
+        })
+      };
+      const handleLike = (e) =>{
+        setLike(like+1);
+        fetch(`http://localhost:3000/flights/${flights.id}/likes`,{
+        method: "PATCH",
+        headers:{"Content-Type": "application/json"},
+          body: JSON.stringify(like),
+        });
+      };
+      const handleDislike = (e) =>{
+        setDislike(dislike+1);
+        fetch(`http://localhost:3000/flights/${flights.id}/dislikes`,{
+        method: "PATCH",
+        headers:{"Content-Type": "application/json"},
+          body: JSON.stringify(dislike),
+        });
+      };
+      
+
 
     return (
         <div>
@@ -46,7 +77,7 @@ export default function FlightsCard({flights}) {
         }
                 action ={
                 <IconButton>
-                    <DeleteOutlined/>
+                    <DeleteOutlined onClick={handleDelete}/>
                 </IconButton>}
                 title={flights.from}
                 subheader={flights.to}
@@ -56,10 +87,22 @@ export default function FlightsCard({flights}) {
                         {flights.description}
                     </Typography>
                 </CardContent>
+
                 <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                      <FavoriteIcon />
+                    <IconButton aria-label="add to favorites" 
+                    >
+                    <Badge color="secondary" badgeContent={like} showZero>
+                      <ThumbUp onClick={handleLike} />
+                      </Badge>
                     </IconButton>
+                    <IconButton aria-label="add to favorites" 
+                    onClick={handleDislike}>
+                    <Badge color="secondary" badgeContent={dislike} showZero>
+                      <ThumbDown />
+                      </Badge>
+                    </IconButton>
+                    
+
                      <ExpandMore
                         expand={expanded}
                         onClick={handleExpandClick}

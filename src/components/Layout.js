@@ -25,6 +25,8 @@ const useStyles = makeStyles({
     },
     btn:{
         color:'#ECCB9A',
+        marginTop: 10,
+        marginBottom: 10,
     },
     title:{
         justifySelf:'start',
@@ -35,12 +37,13 @@ const useStyles = makeStyles({
     },
     group:{
         justifySelf:'end',
-        marginBottom: '10',
+        marginTop: 10,
+        marginBottom: 10,
         marginRight: 30,
     }
 })
 
-export default function Layout({children}) {
+export default function Layout({children, currentUser, handleLogout}) {
     const classes = useStyles()
     
     return (
@@ -55,14 +58,19 @@ export default function Layout({children}) {
                 <Button className={classes.btn}>About</Button>               
                 </Link>
                 <Link to="/airlines">
-                <Button className={classes.btn}>Reviews</Button>
+                <Button className={classes.btn}>Airlines</Button>
+                </Link>
+                <Link to="/flights">                
+                <Button className={classes.btn}>FLights</Button>
                 </Link>
                 <Link to="/signup">                
-                <Button className={classes.btn}>Register</Button>
+                <Button className={classes.btn}>Sign up</Button>
                 </Link>
                 <Link to="/login">                
-                <Button className={classes.btn}>Sign in</Button>
+                <Button className={classes.btn}>Log in</Button>
                 </Link>
+                <Button className={classes.btn} onClick={handleLogout}>Log Out</Button>
+                <p> Logged in as {currentUser}</p>
             </ButtonGroup>  
             </AppBar> 
             <div className={classes.page}>
